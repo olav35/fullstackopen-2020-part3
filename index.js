@@ -31,7 +31,7 @@ app.get('/info', (_, response) => {
 })
 
 app.get('/api/persons', (_, response) => {
-    response.json(numbers)
+    response.json(persons)
 })
 
 app.get('/api/persons/:id', (request, response) => {
