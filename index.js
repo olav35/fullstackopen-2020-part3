@@ -24,6 +24,10 @@ let numbers = [
     }
 ]
 
+app.get('/info', (_, response) => {
+    response.send(`Phonebook has info for 4 people<br><br>${new Date}`)
+})
+
 app.get('/api/persons', (_, response) => {
     response.json(numbers)
 })
