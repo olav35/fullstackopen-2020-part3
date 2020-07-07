@@ -14,11 +14,10 @@ const Person = mongoose.model('Person', personSchema)
 
 const viewEntries = () => {
     console.log('phonebook:')
-    Person
+    return Person
         .find({})
         .then(persons => persons.forEach(person => {
             console.log(`${person.name} ${person.number}`)
-            mongoose.connection.close()
         }))
 }
 
@@ -28,8 +27,7 @@ const addEntry = (name, number) => {
         number
     })
 
-    person.save().then(_ => {
+    return person.save().then(_ => {
         console.log(`added ${name} number ${number} to phonebook`)
-        mongoose.connection.close()
     })
 }
