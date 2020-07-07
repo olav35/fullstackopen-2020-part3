@@ -11,3 +11,13 @@ const personSchema = new mongoose.Schema({
 })
 
 const Person = mongoose.model('Person', personSchema)
+
+const viewEntries = () => {
+    console.log('phonebook:')
+    Person
+        .find({})
+        .then(persons => persons.forEach(person => {
+            console.log(`${person.name} ${person.number}`)
+            mongoose.connection.close()
+        }))
+}
