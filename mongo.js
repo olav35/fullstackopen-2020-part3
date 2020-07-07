@@ -31,3 +31,15 @@ const addEntry = (name, number) => {
         console.log(`added ${name} number ${number} to phonebook`)
     })
 }
+
+const dispatchInput = () => {
+    if(process.argv.length === 5){
+        const name = process.argv[3]
+        const number = process.argv[4]
+        addEntry(name, number).then(_ => mongoose.connection.close())
+    } else {
+        viewEntries().then(_ => mongoose.connection.close())
+    }
+}
+
+dispatchInput()
