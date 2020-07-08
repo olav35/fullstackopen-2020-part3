@@ -23,6 +23,7 @@ app.get('/info', (_, response) => {
             console.log(error)
         } else {
             response.send(`Phonebook has info for ${count} persons<br><br>${new Date}`)
+            const person = request.body
         }
     })
 })
@@ -53,21 +54,19 @@ app.delete('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    const id = Math.floor(Math.random() * 2**31) // It said explicitly to do this.
-
-    const person = request.body
-    person.id = id
+    const person = new Person({
+        name: request.body.name,
+        number: request.body.number
+    })
 
     if(!person.name) {
         response.status(400).json({ error: 'name missing' })
     } else if (!person.number){
         response.status(400).json({ error: 'number missing'})
-    } else if (Person.some(p => p.name === person.name)){
-        response.json({ error: 'name not unique' })
     } else {
-        Person = Person.concat(person)
-
-        response.status(200).json(person)
+        person.save().then(savedPerson => {
+            response.json(savedPerson)
+        }) 
     }
 })
 
