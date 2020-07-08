@@ -34,14 +34,15 @@ app.get('/api/persons', (_, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    const id = request.params.id
+    persons.findById(id)
+        .then((person) => {
+            response.json(person)
+        })
+        .catch(_ => {
+            response.status(404).end()
+        })
 
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
