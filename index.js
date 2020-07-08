@@ -1,7 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
-const persons = require('./models/persons')
+const Person = require('./models/person')
 
 const app = express()
 
@@ -18,7 +18,7 @@ app.use(morgan((tokens, request, response) => {return [tokens.method(request, re
 }))
 
 app.get('/info', (_, response) => {
-    persons.countDocuments({}, (error, count) => {
+    Person.countDocuments({}, (error, count) => {
         if(error){
             console.log(error)
         } else {
@@ -28,14 +28,14 @@ app.get('/info', (_, response) => {
 })
 
 app.get('/api/persons', (_, response) => {
-    persons.find({}).then(result => {
-        response.json(result)
+    Person.find({}).then(persons => {
+        response.json(persons)
     })
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    persons.findById(id)
+    Person.findById(id)
         .then((person) => {
             response.json(person)
         })
@@ -47,7 +47,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
+    Person = Person.filter(person => person.id !== id)
 
     response.status(204).end()
 })
@@ -62,10 +62,10 @@ app.post('/api/persons', (request, response) => {
         response.status(400).json({ error: 'name missing' })
     } else if (!person.number){
         response.status(400).json({ error: 'number missing'})
-    } else if (persons.some(p => p.name === person.name)){
+    } else if (Person.some(p => p.name === person.name)){
         response.json({ error: 'name not unique' })
     } else {
-        persons = persons.concat(person)
+        Person = Person.concat(person)
 
         response.status(200).json(person)
     }
