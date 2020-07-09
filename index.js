@@ -23,7 +23,6 @@ app.get('/info', (_, response, next) => {
             console.log(error)
         } else {
             response.send(`Phonebook has info for ${count} persons<br><br>${new Date}`)
-            const person = request.body
         }
     }).catch(error => next(error))
 })
