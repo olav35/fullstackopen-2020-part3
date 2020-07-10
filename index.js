@@ -8,14 +8,16 @@ const app = express()
 app.use(express.static('build'))
 app.use(express.json())
 app.use(cors())
-app.use(morgan((tokens, request, response) => {return [tokens.method(request, response),
+app.use(morgan((tokens, request, response) => 
+    [
+        tokens.method(request, response),
         tokens.url(request, response),
         tokens.status(request, response),
         tokens.res(request, response, 'content-length'), '-',
         tokens['response-time'](request, response), 'ms',
         JSON.stringify(request.body)
     ].join(' ')
-}))
+))
 
 app.get('/info', (_, response, next) => {
     Person.countDocuments({}, (error, count) => {
@@ -27,7 +29,7 @@ app.get('/info', (_, response, next) => {
     }).catch(error => next(error))
 })
 
-app.get('/api/persons', (_, response, error) => {
+app.get('/api/persons', (error, _, response, next) => {
     Person.find({})
         .then(persons => {
             response.json(persons)
@@ -46,10 +48,10 @@ app.get('/api/persons/:id', (request, response, next) => {
         })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (error, request, response, next) => {
     const id = request.params.id
     Person.findByIdAndRemove(id)
-        .then(_ => {
+        .then((_) => {
             response.status(204).end()
         })
         .catch(error => {
@@ -90,12 +92,12 @@ const errorHandler = (error, _, response, next) => {
     console.error(error.message)
 
     switch (error.name) {
-        case 'CastError':
-            return response.status(400).send({ error: 'malformatted id'})    
-        case 'ValidationError':
-            return response.status(400).json({ error: error.message })
-        default:
-            next(error)
+    case 'CastError':
+        return response.status(400).send({ error: 'malformatted id'})    
+    case 'ValidationError':
+        return response.status(400).json({ error: error.message })
+    default:
+        next(error)
     }
 }
 
