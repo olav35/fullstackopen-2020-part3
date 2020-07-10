@@ -95,11 +95,14 @@ app.put('/api/persons/:id', (request, response, next) => {
 const errorHandler = (error, _, response, next) => {
     console.error(error.message)
 
-    if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
+    switch (error.name) {
+        case 'CastError':
+            return response.status(400).send({ error: 'malformatted id'})    
+        case 'ValidationError':
+            return response.status(400).json({ error: error.message })
+        default:
+            next(error)
     }
-
-    next(error)
 }
 
 app.use(errorHandler)
