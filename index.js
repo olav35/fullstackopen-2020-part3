@@ -63,19 +63,13 @@ app.post('/api/persons', (request, response, next) => {
         number: request.body.number
     })
 
-    if(!person.name) {
-        response.status(400).json({ error: 'name missing' })
-    } else if (!person.number){
-        response.status(400).json({ error: 'number missing'})
-    } else {
-        person.save()
-            .then(savedPerson => {
-                response.json(savedPerson)
-            }) 
-            .catch(error => {
-                next(error)
-            })
-    }
+    person.save()
+        .then(savedPerson => {
+            response.json(savedPerson)
+        })
+        .catch(error => {
+            next(error)
+        })
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
